@@ -1,0 +1,13 @@
+{{- if .Values.master.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "jenkins.fullname" . }}
+  annotations:
+{{ toYaml .Values.master.ingress.annotations | indent 4 }}
+spec:
+  tls:
+{{ toYaml .Values.master.ingress.tls | indent 4 }}
+  rules:
+{{ toYaml .Values.master.ingress.rules | indent 4 }}
+{{- end }}
