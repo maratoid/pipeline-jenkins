@@ -24,6 +24,14 @@ traits.add(
     EnumSet.of(ChangeRequestCheckoutStrategy.MERGE), 
     new ForkPullRequestDiscoveryTrait.TrustPermission()))
 
+// read all creds from vault
+// TODO
+final VaultConfig config = new VaultConfig()
+                                  .address("template me")
+                                  .token("template me")
+                                  .build();
+final Vault vault = new Vault(config);
+
 // setup github SCM
 GitHubSCMSource githubSCM = new GitHubSCMSource(
     java.util.UUID.randomUUID().toString(),
