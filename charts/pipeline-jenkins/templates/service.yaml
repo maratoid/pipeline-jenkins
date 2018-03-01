@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins
+  labels:
+    name: jenkins
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    component: "{{.Release.Name}}-jenkins-master"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  ports:
+    - port: {{.Values.master.port}}
+      name: masterport
+      protocol: TCP
+      targetPort: {{.Values.master.port}}
+    - port: {{.Values.agent.port}}
+      name: agentport
+      protocol: TCP
+      targetPort: {{.Values.agent.port}}
+  selector:
+    name: jenkins
+  type: {{.Values.master.serviceType}}

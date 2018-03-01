@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata: 
+  name: "jenkins-helm-{{.Release.Name}}"
+  annotations:
+    "helm.sh/hook": pre-install
+data:
+  service-account.json: {{ .Values.helm.svcAccountKey | quote }}

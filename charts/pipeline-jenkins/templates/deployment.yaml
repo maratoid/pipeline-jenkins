@@ -1,0 +1,135 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: jenkins
+  labels:
+    name: jenkins
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    component: "{{.Release.Name}}-jenkins-master"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: "{{.Release.Name}}-jenkins-master"
+  template:
+    metadata:
+      labels:
+        name: jenkins
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+        component: "{{.Release.Name}}-jenkins-master"
+    spec:
+      securityContext:
+        runAsUser: 0
+      initContainers:
+        - name: copy-default-configs
+          imagePullPolicy: Always
+          image: "{{ .Values.images.jenkinsagent }}"
+          command: ['bash', '-ec', '/var/jenkins_config/render-jenkins-config.sh']
+          volumeMounts:
+            - name: jenkins-config
+              mountPath: /var/jenkins_config
+            - name: jenkins-home
+              mountPath: /var/jenkins_home
+        - name: create-job-creation-job
+          imagePullPolicy: Always
+          image: "{{ .Values.images.jenkinsagent }}"
+          command: ['bash', '-ec', '/var/jenkins_config/create-k8s-job.sh']
+          volumeMounts:
+            - name: jenkins-config
+              mountPath: /var/jenkins_config
+            - name: jenkins-home
+              mountPath: /var/jenkins_home
+            - name: jenkins-jobs
+              mountPath: /var/jenkins_jobs
+      containers:
+        - name: jenkins
+          image: "{{.Values.images.jenkinsmaster}}"
+          imagePullPolicy: Always
+          env:
+            - name: JAVA_OPTS
+              {{- if .Values.permissiveScriptSecurity }}
+              value: "{{ .Values.javaOptions }} -Dpermissive-script-security.enabled=true"
+              {{- else }}
+              value: "{{ .Values.javaOptions }}"
+              {{- end }}
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins
+                  key: jenkins-admin-password
+            - name: ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins
+                  key: jenkins-admin-user
+            - name: JENKINS_OPTS
+              value: "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD) --argumentsRealm.roles.$(ADMIN_USER)=admin"
+            - name: VIRTUAL_HOST
+              value: "{{.Values.jenkinsUrl}}"
+            - name: VIRTUAL_PORT
+              value: "{{.Values.master.port}}"
+          ports:
+            - containerPort: {{.Values.master.port}}
+              name: http
+            - containerPort: {{.Values.agent.port}}
+              name: slavelistener
+          resources:
+            requests:
+              cpu: "{{.Values.master.cpu}}"
+              memory: "{{.Values.master.memory}}"
+          livenessProbe:
+            httpGet:
+              path: /robots.txt
+              port: http
+            initialDelaySeconds: 250
+            timeoutSeconds: 2                 
+          volumeMounts:
+            - mountPath: /var/jenkins_home
+              name: jenkins-home
+              readOnly: false
+            - mountPath: /var/jenkins_config
+              name: jenkins-config
+              readOnly: false
+            - mountPath: /var/jenkins_home/jobs
+              name: jenkins-jobs
+              readOnly: false
+            - mountPath: /etc/jenkins-ssh-keys
+              name: jenkins-ssh-keys
+              readOnly: true
+            - mountPath: /etc/gke
+              name: jenkins-gke-keys
+              readOnly: true
+            - mountPath: /etc/helm
+              name: jenkins-helm-keys
+              readOnly: true
+      volumes:
+      - name: jenkins-config
+        configMap:
+          name: jenkins-configuration
+          defaultMode: 0775
+      - name: jenkins-home
+        emptyDir: {}
+      - name: jenkins-ssh-keys
+        secret:
+          secretName: jenkins-ssh-{{.Release.Name}}
+          defaultMode: 0400
+      - name: jenkins-gke-keys
+        secret:
+          secretName: jenkins-gke-{{.Release.Name}}
+      - name: jenkins-helm-keys
+        secret:
+          secretName: jenkins-helm-{{.Release.Name}}
+      {{- if .Values.persistence.enabled }}
+      - name: jenkins-jobs
+        persistentVolumeClaim:
+          claimName: {{.Values.persistence.claimName}}
+      {{- else }}
+      - name: jenkins-jobs
+        emptyDir: {}
+      {{- end -}}
