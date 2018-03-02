@@ -26,9 +26,9 @@ kubernetesCloud.setSkipTlsVerify(false)
 // read kubernetes server certificate key form vault
 // TODO
 final VaultConfig config = new VaultConfig()
-                                  .address("template me")
-                                  .token("template me")
-                                  .build();
+  .address("template me")
+  .token("template me")
+  .build();
 final Vault vault = new Vault(config);
 kubernetesCloud.setCredentialsId('template me')
 

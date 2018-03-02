@@ -14,7 +14,7 @@ import jenkins.scm.api.mixin.ChangeRequestCheckoutStrategy;
 
 // shared library instance
 def globalLibsDesc = Jenkins.getInstance()
-        .getDescriptor("org.jenkinsci.plugins.workflow.libs.GlobalLibraries")
+  .getDescriptor("org.jenkinsci.plugins.workflow.libs.GlobalLibraries")
 
 // setup some github SCM traits
 List<SCMSourceTrait> traits = new ArrayList<>()
@@ -27,19 +27,19 @@ traits.add(
 // read all creds from vault
 // TODO
 final VaultConfig config = new VaultConfig()
-                                  .address("template me")
-                                  .token("template me")
-                                  .build();
+  .address("template me")
+  .token("template me")
+  .build();
 final Vault vault = new Vault(config);
 
 // setup github SCM
 GitHubSCMSource githubSCM = new GitHubSCMSource(
-    java.util.UUID.randomUUID().toString(),
-    "template me github api", // template me
-    "template me scan access creds", //
-    "template me scan access creds",
-    "template me repo owner",
-    "template me repo name")
+  java.util.UUID.randomUUID().toString(),
+  "template me github api", // template me
+  "template me scan access creds", //
+  "template me scan access creds",
+  "template me repo owner",
+  "template me repo name")
 githubSCM.setTraits(traits)
 
 // scm retriever instance
