@@ -1,0 +1,126 @@
+# Default values for jenkins.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+images:
+  jenkinsmaster: "quay.io/samsung_cnct/jenkinsmaster:prod"
+  jenkinsagent: "quay.io/samsung_cnct/jenkinsagent:prod"
+  jenkinsgradle: "quay.io/samsung_cnct/jenkinsgradle:prod"
+  jenkinsshelldev: "quay.io/samsung_cnct/jenkinsshelldev:prod"
+
+kubernetes:
+  cloudName: "kubernetes"
+  apiServer: "https://kubernetes.default.svc.cluster.local" 
+  namespace: "prod"
+  containerCap: 10000
+  timeout: 60
+  maxRequestsPerHost: 1000
+
+slack:
+  baseUrl: "https://samsung-cnct.slack.com/services/hooks/jenkins-ci/"
+  domain: "samsung-cnct"
+  room: "#ping-jenkins"
+  sendAs: "SDSBot"
+
+github:
+  apiUrl: "https://api.github.com"
+  manageHooks: true
+  clientCacheSize: 20
+  overrideHookUrl:
+  admins: "change me"
+  botUser: "SDSBot"
+  pipelineOrg: "samsung-cnct"
+  pipelineRepo: "pipeline-library"
+  orgNames: "samsung-cnct"
+
+vault:
+  server: "https://vault-access.prod.svc.cluster.local"
+  tls:
+    secret: "vault-client-tls"
+    mount: "/etc/vault/tls"
+    cert: "vault-client.pem"
+    key: "vault-client-key.pem"
+    ca: "ca.pem"
+  token: "change me"
+  github:
+    path: "secret/jenkins-github"
+    botAccessToken: "botAccessToken"
+    oauthId: "oauthId"
+    oauthKey: "oauthKey"
+  metrics:
+    path: "secret/jenkins-metrics"
+    accessTokenKey: "accessKey"
+  metrics:
+    token: "change me"
+  slack:
+    path: "secret/jenkins-slack"
+    apiTokenKey: "apiToken"
+  kubernetes:
+    path: "secret/jenkins-kubernetes"
+    serverCertKey: "serverCert"
+
+persistence:
+  enabled: true
+  preserve: true
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+  ## jenkins data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+
+  annotations: {}
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+agent:
+  cpu: "200m"
+  memory: "1024Mi"
+  port: 50000
+  requestsPerHost: 1000
+
+master:
+  name: jenkins-master
+  runAsUser:
+  adminUser: admin
+  adminPassword: admin
+  cpu: "200m"
+  memory: "1024Mi"
+  port: 8080
+  serviceType: "NodePort"
+  serviceAnnotations: {}
+  adminEmail: "me@email.com"
+  javaOptions: "-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false"
+  jenkinsHookUrl:
+  jenkinsUrl: "https://jenkins.somedomain.io"
+  seedJobToken: "seed"
+  permissiveScriptSecurity: false
+  # jenkinsOpts: ""
+  # jenkinsUriPrefix: "/jenkins"
+  healthProbes: 
+    enabled: true
+    timeout: 60
+
+rbac:
+  install: true
+  serviceAccountName: default
+  # RBAC api version (currently either v1beta1 or v1)
+  apiVersion: v1beta1
+  # Cluster role reference
+  roleRef: cluster-admin
+
+networkPolicy:
+  # Enable creation of NetworkPolicy resources.
+  enabled: true
+
+deployment:
+  # Deployment api version (currently either v1beta2 or v1)
+  apiVersion: v1beta2

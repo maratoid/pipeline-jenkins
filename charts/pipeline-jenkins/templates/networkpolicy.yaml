@@ -1,0 +1,16 @@
+{{- if .Values.networkPolicy.enabled }}
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: "{{ template "jenkins.fullname" . }}"
+spec:
+  podSelector:
+    matchLabels:
+      component: "{{ .Release.Name }}-{{ .Values.master.name }}"
+  ingress:
+    - ports:
+      # Allow web access to the UI
+      - port: {{ .Values.master.port }}
+      # Allow inbound connections on agent port
+      - port: {{ .Values.agent.port }}
+{{- end }}

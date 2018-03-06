@@ -1,0 +1,97 @@
+apiVersion: apps/{{ required "A valid .Values.deployment.apiVersion entry required!" .Values.deployment.apiVersion }}
+kind: Deployment
+metadata:
+  name: {{ template "jenkins.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.master.name }}"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: "{{ .Release.Name }}-{{ .Values.master.name }}"
+  template:
+    metadata:
+      labels:
+        app: {{ template "jenkins.fullname" . }}
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        component: "{{ .Release.Name }}-{{ .Values.master.name }}"
+    spec:
+      securityContext:
+        runAsUser: {{ default 0 .Values.master.runAsUser }}
+      serviceAccountName: {{ if .Values.rbac.install }}{{ template "jenkins.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      containers:
+        - name: jenkins-master
+          image: "{{.Values.images.jenkinsmaster}}"
+          imagePullPolicy: Always
+          env:
+            - name: JAVA_OPTS
+              {{- if .Values.master.permissiveScriptSecurity }}
+              value: "{{ .Values.master.javaOptions }} -Dpermissive-script-security.enabled=true"
+              {{- else }}
+              value: "{{ .Values.master.javaOptions }}"
+              {{- end }}
+            - name: JENKINS_OPTS
+              value: "{{ if .Values.master.jenkinsUriPrefix }}--prefix={{ .Values.master.jenkinsUriPrefix }} {{ end }}--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD) --argumentsRealm.roles.$(ADMIN_USER)=$(ADMIN_USER) {{ default "" .Values.master.jenkinsOpts}}"
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "jenkins.fullname" . }}
+                  key: jenkins-admin-password
+            - name: ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "jenkins.fullname" . }}
+                  key: jenkins-admin-user
+          ports:
+            - containerPort: {{.Values.master.port}}
+              name: master
+            - containerPort: {{.Values.agent.port}}
+              name: agent
+          resources:
+            requests:
+              cpu: "{{.Values.master.cpu}}"
+              memory: "{{.Values.master.memory}}"
+          {{- if .Values.master.healthProbes.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: http
+            initialDelaySeconds: {{ .Values.master.healthProbes.timeout }}
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: http
+            initialDelaySeconds: {{ .Values.master.healthProbes.timeout }}
+          {{- end }}          
+          volumeMounts:
+            - mountPath: /var/jenkins_home/jobs
+              name: jenkins-jobs
+              readOnly: false
+            - mountPath: {{ .Values.vault.tls.mount }}
+              name: vault-tls
+              readOnly: false
+            - mountPath: /var/jenkins_home/init.groovy.d
+              name: groovy-setup
+              readOnly: false
+      volumes:
+      - name: vault-tls
+        secret:
+          secretName: {{ .Values.vault.tls.secret }}
+      - name: groovy-setup
+        secret:
+          secretName: {{ template "jenkins.fullname" . }}-setup
+      {{- if .Values.persistence.enabled }}
+      - name: jenkins-jobs
+        persistentVolumeClaim:
+          claimName: "{{ template "jenkins.fullname" . }}"
+      {{- else }}
+      - name: jenkins-jobs
+        emptyDir: {}
+      {{- end -}}

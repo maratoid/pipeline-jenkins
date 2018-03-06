@@ -1,0 +1,10 @@
+name: pipeline-jenkins
+home: https://github.com/samsung-cnct/pipeline-jenkins
+version: 0.1.0
+description: A helm chart for running kubernetes-based jenkins pipeline
+sources:
+  - https://github.com/samsung-cnct/pipeline-jenkins
+maintainers:
+  - name: Marat Garafutdinov
+    email: maratoid@gmail.com
+icon: https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png
