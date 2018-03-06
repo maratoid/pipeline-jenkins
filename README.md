@@ -14,79 +14,46 @@ This chart will do the following:
 
 The following tables lists the configurable parameters of the Jenkins chart and their default values.
 
-### GitHub, Authentication, images
+### images
 | Parameter | Description | Default |
 | --- | --- | --- |
-| `adminEmail` | Administrator email address | `me@email.com` |
-| `javaOptions` | Java runtime options | `-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false` |
-| `jenkinsUrl` | Jenkins URL | `jenkins.cnct.io` |
-| `jobsRepo` | Jenkins jobs repo | `https://github.com/pipeline-jobs` |
-| `jenkinsHookUrl` | Jenkins web url | `optional` |
-| `workflowRepo` | Jenkins jobs repo | `https://github.com/samsung-cnct/cnct-pipeline-library` |
-| `seedJobToken` | Seed job token | `seed` |
 | `images.jenkinsgradle` | Image name with gradle tools installed | `set me` |
 | `images.jenkinsagent` | Image name with gke tools installed | `set me` |
 | `images.jenkinsmaster` | Master jenkins image | `set me` |
 | `images.jenkinsshelldev` | BATS image image | `set me` |
 
+### kubernetes
+| Parameter | Description | Default |
+| --- | --- | --- |
+| `kubernetes.cloudName` | K8s cloud name for Jenkins cloud management | `Kubernetes` |
+| `kubernetes.apiServer` | K8s api server | `https://kubernetes.default.svc.cluster.local` |
+| `kubernetes.namespace` | K8s namespace for agent pods  | `prod` |
+| `kubernetes.containerCap` | Max agent containers | `10000` |
+| `kubernetes.timeout` | Various connection timeouts | `60` |
 
 ### Slack
 | Parameter | Description | Default |
 | --- | --- | --- |
-| `slack.slackDomain` | Slack domain | `change me` |
+| `slack.baserl` | Slack base url | `https://samsung-cnct.slack.com/services/hooks/jenkins-ci/` |
+| `slack.slackDomain` | Slack domain | `samsung-cnct` |
 | `slack.slackRoom` | Slack room name | `#ping-jenkins` |
-| `slack.slackApiToken` | Slack API token | `change me` |
 
 ### GitHub
 | Parameter | Description | Default |
 | --- | --- | --- |
-| `github.clientId` | GitHub client Id | `change me` |
-| `github.botUser` | GitHub user name | `change me` |
-| `github.clientKey` | GitHub client key | `change me` |
 | `github.admins` | GitHub admin usernames | `change me` |
+| `github.botUser` | Bot username| `SDSBot` |
+| `github.pipelineOrg` | Org for the shared pipeline lib | `samsung-cnct` |
+| `github.pipelineRepo` | Repo for the shared pipeline lib | `pipeline-library` |
+| `github.overrideHookUrl` | Different url for webhook callbacks | `` |
+| `github.manageHooks` | Jenkins manages github webhooks for all jobs | `true` |
+| `github.orgNames` | GitHub org names to monitor | `change me` |
 
-### GKE
+### vault
 | Parameter | Description | Default |
 | --- | --- | --- |
-| `gke.clusterName` | GKE cluster name | `production-cluster` |
-| `gke.clusterPrimaryZone` | GKE cluster primary zone | `us-east1-b` |
-| `gke.gkeProject` | GKE project | `change me` |
-| `gke.svcAccountId` | GKE service account Id | `change me` |
-| `gke.svcAccountKey` | GKE service account key | `change me` |
-
-### SSH
-| Parameter | Description | Default |
-| --- | --- | --- |
-| `ssh.sshPrivateKey` | SSH private key | `change me` |
-| `ssh.sshPublicKey` | SSH public key | `change me` |
 
 ### Persistence
 | Parameter | Description | Default |
 | --- | --- | --- |
-| `persistence.enabled` | Enable the use of a Jenkins PVC | `false` |
-| `persistence.accessMode` | The PVC access mode | `ReadWriteOnce` |
-| `persistence.reclaiming` | PV reclaim policy | `Retain` |
-| `persistence.size` | The size of the PVC | `200Gi` |
-| `persistence.claimName` | PV, PVC and GCE PD names | `dr-jenkins-jobs` |
 
-
-### Agent
-| Parameter | Description | Default |
-| --- | --- | --- |
-| `agent.cpu` | Agent requested cpu | `200m` |
-| `agent.memory` | Agent requested memory | `1024Mi` |
-| `agent.port` | Agent requested port | `50000` |
-
-### Master
-| Parameter | Description | Default |
-| --- | --- | --- |
-| `master.cpu` | Master requested cpu | `200m` |
-| `master.memory` | Master requested memory | `1024Mi` |
-| `master.port` | k8s service port | `8080` |
-| `master.serviceType` | k8s service type | `NodePort` |
-| `master.nodePort` | k8s node port | `30061` |
-
-### Helm
-| Parameter | Description | Default |
-| --- | --- | --- |
-| `helm.serviceAccount` | Helm service account Id | `change me` |
