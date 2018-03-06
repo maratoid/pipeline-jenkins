@@ -1,7 +1,7 @@
 FROM jenkins
 MAINTAINER Samsung CNCT <john.felten@gmail.com>
 
-ENV JENKINS_VERSION 2.102
+ENV JENKINS_VERSION 2.110
 
 VOLUME /var/jenkins_home
 VOLUME /etc/jenkins_jobs

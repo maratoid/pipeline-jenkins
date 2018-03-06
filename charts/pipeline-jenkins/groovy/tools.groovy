@@ -1,12 +1,11 @@
 def runCommand = { command ->
-  assert(command instanceof String )
   
-  def proc = command.execute()
-  // proc.in.eachLine { line -> println line }
-  proc.out.close()
+  def proc = [ 
+    "bash", 
+    "-c", 
+    command ].execute()
+
   proc.waitFor()
-
-  assert !proc.exitValue()
-
-  return proc.in
+  
+  return [proc.exitValue(), proc.text]
 }

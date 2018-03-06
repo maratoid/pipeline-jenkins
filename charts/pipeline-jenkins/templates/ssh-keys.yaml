@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: "jenkins-ssh-{{.Release.Name}}"
-  annotations:
-    "helm.sh/hook": pre-install
-data:
-  ssh-privatekey: {{ .Values.ssh.sshPrivateKey | quote }}
-  ssh-publickey: {{ .Values.ssh.sshPublicKey | quote }}

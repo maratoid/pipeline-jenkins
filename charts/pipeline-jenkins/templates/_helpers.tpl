@@ -2,22 +2,24 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 24 -}}
+{{- define "jenkins.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
-Create a random (but prefixed) name for unmanaged (hook) resources for easier cleanup
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
 */}}
-{{- define "hookname" -}}
-{{- $prefix := randAlpha 15 -}}
-{{- printf "%s-%s" "hook" $prefix | lower | trunc 24 -}}
+{{- define "jenkins.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-
-{{/*
-Create a random postfixed name for ci job creation k8s job
-*/}}
-{{- define "jenkinsJobName" -}}
-{{- $prefix := randAlpha 10 -}}
-{{- printf "create-jobs-%s" $prefix | lower | trunc 24 -}}
+{{- end -}}
 {{- end -}}

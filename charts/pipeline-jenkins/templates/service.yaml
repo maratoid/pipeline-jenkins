@@ -1,15 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: jenkins
+  name: {{ template "jenkins.fullname" . }}
   labels:
-    name: jenkins
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    component: "{{.Release.Name}}-jenkins-master"
+    app: {{ template "jenkins.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
   annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+{{ toYaml .Values.master.serviceAnnotations | indent 4 }}
 spec:
   ports:
     - port: {{.Values.master.port}}
@@ -21,5 +20,5 @@ spec:
       protocol: TCP
       targetPort: {{.Values.agent.port}}
   selector:
-    name: jenkins
+    component: "{{.Release.Name}}-{{.Values.master.name}}"
   type: {{.Values.master.serviceType}}

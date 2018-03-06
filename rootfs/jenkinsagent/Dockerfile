@@ -1,8 +1,7 @@
 FROM golang:1.8.0
 
-ENV KUBERNETES_VERSION=v1.8.5 \
-  HELM_VERSION=v2.7.2 \
-  DOCKER_API_VERSION=1.23
+ENV KUBERNETES_VERSION=v1.8.2 \
+  HELM_VERSION=v2.8.0 
 
 RUN apt-get update -qq && apt-get install -qqy \
     apt-transport-https \
@@ -17,12 +16,8 @@ RUN apt-get update -qq && apt-get install -qqy \
     html-xml-utils \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Google Cloud SDK and kubectl
-RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
-    && echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee /etc/apt/sources.list.d/google-cloud-sdk.list \
-    && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
-    && apt-get update && apt-get install -y -q google-cloud-sdk \
-    && wget -O /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBERNETES_VERSION}/bin/linux/amd64/kubectl \
+# Install kubectl
+RUN wget -O /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBERNETES_VERSION}/bin/linux/amd64/kubectl \
     && chmod +x /usr/bin/kubectl
 
 # Install helm
