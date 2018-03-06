@@ -18,16 +18,21 @@ kubernetes:
   maxRequestsPerHost: 1000
 
 slack:
+  baseUrl: "https://samsung-cnct.slack.com/services/hooks/jenkins-ci/"
   domain: "samsung-cnct"
-  rooms: "#ping-jenkins"
+  room: "#ping-jenkins"
+  sendAs: "SDSBot"
 
 github:
   apiUrl: "https://api.github.com"
   manageHooks: true
   clientCacheSize: 20
+  overrideHookUrl:
   admins: "change me"
-  botUser: "change me"
-  orgNames: "change me"
+  botUser: "SDSBot"
+  pipelineOrg: "samsung-cnct"
+  pipelineRepo: "pipeline-library"
+  orgNames: "samsung-cnct"
 
 vault:
   server: "https://vault-access.prod.svc.cluster.local"
@@ -40,9 +45,9 @@ vault:
   token: "change me"
   github:
     path: "secret/jenkins-github"
-    botAccessToken: "jenkins-bot-access-token"
-    oauthId: "change me"
-    oauthKey: "change me"
+    botAccessToken: "botAccessToken"
+    oauthId: "oauthId"
+    oauthKey: "oauthKey"
   metrics:
     path: "secret/jenkins-metrics"
     accessTokenKey: "accessKey"
@@ -95,10 +100,9 @@ master:
   adminEmail: "me@email.com"
   javaOptions: "-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false"
   jenkinsHookUrl:
-  jenkinsUrl: "jenkins.somedomain.io"
-  jobsRepo: "URL to jobs repo"
+  jenkinsUrl: "https://jenkins.somedomain.io"
   seedJobToken: "seed"
-  permissiveScriptSecurity: true
+  permissiveScriptSecurity: false
   # jenkinsOpts: ""
   # jenkinsUriPrefix: "/jenkins"
   healthProbes: 

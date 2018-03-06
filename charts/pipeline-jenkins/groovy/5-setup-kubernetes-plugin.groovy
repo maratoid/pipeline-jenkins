@@ -4,7 +4,10 @@ import hudson.model.*
 import jenkins.model.*
 import org.csanchez.jenkins.plugins.kubernetes.*
 
-evaluate(new File("vault-tools.groovy"))
+def vault = new GroovyScriptEngine( '.' ).with {
+  loadScriptByName( '/var/jenkins_home/init.groovy.d/vault-tools' )
+} 
+this.metaClass.mixin vault
 
 def kubernetesCloud = new KubernetesCloud(
   '{{ .Values.kubernetes.cloudName }}',
@@ -18,9 +21,9 @@ def kubernetesCloud = new KubernetesCloud(
   {{ .Values.kubernetes.timeout }} // retention timeout template me
 )
 
-kubernetesCloud.setCredentialsId('jenkins-service-account')
+kubernetesCloud.setCredentialsId('kubernetes-access')
 kubernetesCloud.setSkipTlsVerify(false)
-kubernetesCloud.setMaxRequestsPerHostStr('{{ .Values.kubernetes.maxRequestsPerHost ')
+kubernetesCloud.setMaxRequestsPerHostStr('{{ .Values.kubernetes.maxRequestsPerHost }}')
 kubernetesCloud.setServerCertificate(
   getKV(
     true,  

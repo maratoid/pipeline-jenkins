@@ -1,5 +1,5 @@
 FROM jenkins
-MAINTAINER Samsung CNCT <john.felten@gmail.com>
+MAINTAINER Samsung CNCT <maratoid@gmail.com>
 
 ENV JENKINS_VERSION 2.110
 

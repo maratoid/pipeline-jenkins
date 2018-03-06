@@ -1,3 +1,4 @@
+/**
 import jenkins.*
 import hudson.*
 import hudson.model.*
@@ -59,3 +60,4 @@ if (!github_authorization.equals(Jenkins.instance.getAuthorizationStrategy())) {
     Jenkins.instance.setAuthorizationStrategy(github_authorization)
     Jenkins.instance.save()
 }
+*/

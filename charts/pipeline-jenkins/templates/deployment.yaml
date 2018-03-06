@@ -25,6 +25,7 @@ spec:
     spec:
       securityContext:
         runAsUser: {{ default 0 .Values.master.runAsUser }}
+      serviceAccountName: {{ if .Values.rbac.install }}{{ template "jenkins.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
         - name: jenkins-master
           image: "{{.Values.images.jenkinsmaster}}"
@@ -76,10 +77,16 @@ spec:
             - mountPath: {{ .Values.vault.tls.mount }}
               name: vault-tls
               readOnly: false
+            - mountPath: /var/jenkins_home/init.groovy.d
+              name: groovy-setup
+              readOnly: false
       volumes:
       - name: vault-tls
         secret:
           secretName: {{ .Values.vault.tls.secret }}
+      - name: groovy-setup
+        secret:
+          secretName: {{ template "jenkins.fullname" . }}-setup
       {{- if .Values.persistence.enabled }}
       - name: jenkins-jobs
         persistentVolumeClaim:

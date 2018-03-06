@@ -24,22 +24,14 @@ traits.add(
     EnumSet.of(ChangeRequestCheckoutStrategy.MERGE), 
     new ForkPullRequestDiscoveryTrait.TrustPermission()))
 
-// read all creds from vault
-// TODO
-final VaultConfig config = new VaultConfig()
-  .address("template me")
-  .token("template me")
-  .build();
-final Vault vault = new Vault(config);
-
 // setup github SCM
 GitHubSCMSource githubSCM = new GitHubSCMSource(
   java.util.UUID.randomUUID().toString(),
-  "template me github api", // template me
-  "template me scan access creds", //
-  "template me scan access creds",
-  "template me repo owner",
-  "template me repo name")
+  "{{ .Values.github.apiUrl }}",
+  "github-access", 
+  "github-access",
+  "{{ .Values.github.pipelineOrg }}",
+  "{{ .Values.github.pipelineRepo }}")
 githubSCM.setTraits(traits)
 
 // scm retriever instance
@@ -47,7 +39,7 @@ SCMSourceRetriever retriever = new SCMSourceRetriever(githubSCM)
 
 // create pipeline library config
 LibraryConfiguration pipelineConfig = new LibraryConfiguration(
-  "template me library name", 
+  "pipeline", 
   retriever)
 pipelineConfig.setDefaultVersion("master")
 pipelineConfig.setImplicit(true)
