@@ -1,4 +1,3 @@
-/**
 import jenkins.*
 import hudson.*
 import hudson.model.*
@@ -8,10 +7,23 @@ import org.jenkinsci.plugins.GithubSecurityRealm
 import org.jenkinsci.plugins.GithubAuthorizationStrategy
 import hudson.security.AuthorizationStrategy
 
-String githubWebUri = 'https://github.com template me'
-String githubApiUri = 'https://api.github.com template me'
-String clientID = 'template me'
-String clientSecret = 'template me'
+def vault = new GroovyScriptEngine( '.' ).with {
+  loadScriptByName( '/var/jenkins_home/init.groovy.d/vault-tools' )
+} 
+this.metaClass.mixin vault
+
+String githubWebUri = 'https://{{ .Values.github.baseUrl }}'
+String githubApiUri = '{{ .Values.github.apiUrl }}'
+String clientID = getKV(
+    true,  
+    "{{ .Values.vault.token }}", 
+    "{{ .Values.vault.github.path }}", 
+    "{{ .Values.vault.github.oauthId }}" )
+String clientSecret = getKV(
+    true,  
+    "{{ .Values.vault.token }}", 
+    "{{ .Values.vault.github.path }}", 
+    "{{ .Values.vault.github.oauthKey }}" )
 String oauthScopes = 'read:org'
 
 
@@ -27,9 +39,9 @@ if (!github_realm.equals(Jenkins.instance.getSecurityRealm())) {
 
 // permissions are ordered similar to web UI
 // Admin User Names
-String adminUserNames = 'template me'
+String adminUserNames = '{{ .Values.github.admins }}'
 // Participant in Organization
-String organizationNames = 'template me'
+String organizationNames = '{{ .Values.github.orgNames }}'
 // Use Github repository permissions
 boolean useRepositoryPermissions = true
 // Grant READ permissions to all Authenticated Users
@@ -60,4 +72,3 @@ if (!github_authorization.equals(Jenkins.instance.getAuthorizationStrategy())) {
     Jenkins.instance.setAuthorizationStrategy(github_authorization)
     Jenkins.instance.save()
 }
-*/
