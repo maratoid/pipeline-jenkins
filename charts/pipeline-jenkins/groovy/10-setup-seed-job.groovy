@@ -1,3 +1,7 @@
+import jenkins.*
+import hudson.*
+import hudson.model.*
+import jenkins.model.*
 import jenkins.model.Jenkins.*
 import javaposse.jobdsl.dsl.*
 import javaposse.jobdsl.plugin.*
@@ -29,5 +33,5 @@ job('{{ .Values.github.jobsRepo }}-jobs') {
 }
 """)
 
-def job = Jenkins.instance.getItem('{{ .Values.github.jobsRepo }}-jobs')
+def job = Jenkins.getInstance().getItem('{{ .Values.github.jobsRepo }}-jobs')
 job.scheduleBuild()
