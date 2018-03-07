@@ -25,6 +25,7 @@ slack:
 
 github:
   apiUrl: "https://api.github.com"
+  baseUrl: "github.com"
   manageHooks: true
   clientCacheSize: 20
   overrideHookUrl:
@@ -32,6 +33,8 @@ github:
   botUser: "SDSBot"
   pipelineOrg: "samsung-cnct"
   pipelineRepo: "pipeline-library"
+  jobsOrg: "samsung-cnct"
+  jobsRepo: "pipeline-jobs"
   orgNames: "samsung-cnct"
 
 vault:
