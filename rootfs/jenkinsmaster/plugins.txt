@@ -1,9 +1,11 @@
 blueocean:1.4.2
+build-blocker-plugin:1.7.3
 github-oauth:0.29
 github:1.29.0
 github-pr-comment-build:2.0
 github-branch-source:2.3.2
 greenballs:1.15
+hashicorp-vault-plugin:2.1.0
 job-dsl:1.68
 junit:1.24
 kubernetes-pipeline-aggregator:1.5

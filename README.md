@@ -18,7 +18,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | Parameter | Description | Default |
 | --- | --- | --- |
 | `images.jenkinsgradle` | Image name with gradle tools installed | `set me` |
-| `images.jenkinsagent` | Image name with gke tools installed | `set me` |
+| `images.jenkinsagent` | Image name with kubernetes, helm and other build/ops tools installed | `set me` |
 | `images.jenkinsmaster` | Master jenkins image | `set me` |
 | `images.jenkinsshelldev` | BATS image image | `set me` |
 
