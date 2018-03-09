@@ -20,7 +20,20 @@ job('{{ .Values.github.jobsRepo }}-jobs') {
   }
 
   scm {
-    github('samsung-cnct/pipeline-jobs', 'master', 'https', 'github.com')
+    git {
+      branch('master')
+      
+      browser {
+        githubWeb {
+          repoUrl('https://{{ .Values.github.baseUrl }}/{{ .Values.github.jobsOrg }}/{{ .Values.github.jobsRepo }}')
+        }
+      }
+
+      remote {
+        credentials('github-access')
+        github('{{ .Values.github.jobsOrg }}/{{ .Values.github.jobsRepo }}', 'master', 'https', '{{ .Values.github.baseUrl }}')
+      }
+    }
   }
 
   steps {

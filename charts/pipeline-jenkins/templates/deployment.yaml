@@ -50,9 +50,9 @@ spec:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
           ports:
-            - containerPort: {{.Values.master.port}}
+            - containerPort: {{ .Values.master.port }}
               name: master
-            - containerPort: {{.Values.agent.port}}
+            - containerPort: {{ .Values.agent.port }}
               name: agent
           resources:
             requests:

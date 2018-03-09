@@ -98,20 +98,26 @@ master:
   cpu: "200m"
   memory: "1024Mi"
   port: 8080
-  serviceType: "NodePort"
-  serviceAnnotations: {}
   adminEmail: "me@email.com"
   javaOptions: "-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false"
   jenkinsHookUrl:
   jenkinsUrl: "https://jenkins.somedomain.io"
   seedJobToken: "seed"
   permissiveScriptSecurity: false
+  dslScriptSecurity: true
   # jenkinsOpts: ""
   # jenkinsUriPrefix: "/jenkins"
   healthProbes: 
     enabled: true
     timeout: 60
-
+  service:
+    type: "NodePort"
+    annotations: {}
+  ingress:
+    enabled: false
+    annotations: {}
+    tls:
+    rules:
 rbac:
   install: true
   serviceAccountName: default
