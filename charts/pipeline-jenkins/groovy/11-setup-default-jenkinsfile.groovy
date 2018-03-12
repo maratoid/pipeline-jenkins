@@ -9,5 +9,5 @@ import org.jenkinsci.plugins.configfiles.ConfigFileStore
 
 GlobalConfigFiles globalConfigFiles = Jenkins.getInstance().getExtensionList(GlobalConfigFiles.class).get(GlobalConfigFiles.class);
 ConfigFileStore store = globalConfigFiles.get();
-Config config = new GroovyScript("default-jenkinsfile", "Jenkinsfile", "Default pipeline Jenkinsfile", "new cnctPipeline().execute()");
+Config config = new GroovyScript("default-jenkinsfile", "Jenkinsfile", "Default pipeline Jenkinsfile", "import io.cnct.pipeline.*\nnew cnctPipeline().execute()");
 store.save(config);
