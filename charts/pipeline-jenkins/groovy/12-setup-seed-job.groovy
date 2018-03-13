@@ -5,10 +5,12 @@ import jenkins.model.*
 import jenkins.model.Jenkins.*
 import javaposse.jobdsl.dsl.*
 import javaposse.jobdsl.plugin.*
+import org.jenkinsci.plugins.scriptsecurity.scripts.*
+import org.jenkinsci.plugins.scriptsecurity.scripts.languages.*
 
 JenkinsJobManagement jm = new JenkinsJobManagement(System.out, [:], new File('.'));
-DslScriptLoader dslScriptLoader = new DslScriptLoader(jm)
-dslScriptLoader.runScript("""
+
+String seedJob = """
 job('{{ .Values.github.jobsRepo }}-jobs') {
 
   displayName('Re-create {{ .Values.github.jobsRepo }} jobs')
@@ -19,32 +21,42 @@ job('{{ .Values.github.jobsRepo }}-jobs') {
     scanQueueFor('ALL')
   }
 
+  logRotator {
+    artifactDaysToKeep(10)
+  }
+
   scm {
-    git {
+    git {    
       branch('master')
-      
-      browser {
-        githubWeb {
-          repoUrl('https://{{ .Values.github.baseUrl }}/{{ .Values.github.jobsOrg }}/{{ .Values.github.jobsRepo }}')
-        }
-      }
 
       remote {
         credentials('github-access')
-        github('{{ .Values.github.jobsOrg }}/{{ .Values.github.jobsRepo }}', 'master', 'https', '{{ .Values.github.baseUrl }}')
+        url('https://{{ .Values.github.baseUrl }}/{{ .Values.github.jobsOrg }}/{{ .Values.github.jobsRepo }}')
       }
     }
   }
 
   steps {
-    dsl {
-      external 'jobdsl/**/*.groovy'
+    jobDsl {
       additionalClasspath(['lib/*.jar','src/main/groovy'].join('\\n'))
-      removeAction 'DELETE'
+      ignoreExisting(false)
+      removedJobAction('DELETE')
+      removedViewAction('DELETE')
+      sandbox(true)
+      targets('jobdsl/**/*.groovy')
     }
   }
 }
-""")
+"""
+ApprovalContext approvalContext = ApprovalContext.create();
+String seedJobHash = new ScriptApproval.PendingScript(
+  seedJob, 
+  GroovyLanguage.get(), 
+  approvalContext).getHash();
+ScriptApproval.get().approveScript(seedJobHash)
+
+DslScriptLoader dslScriptLoader = new DslScriptLoader(jm)
+dslScriptLoader.runScript(seedJob)
 
 def job = Jenkins.getInstance().getItem('{{ .Values.github.jobsRepo }}-jobs')
 job.scheduleBuild()

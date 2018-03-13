@@ -12,7 +12,6 @@ images:
 kubernetes:
   cloudName: "kubernetes"
   apiServer: "https://kubernetes.default.svc.cluster.local" 
-  namespace: "prod"
   containerCap: 10000
   timeout: 60
   maxRequestsPerHost: 1000
@@ -99,10 +98,9 @@ master:
   memory: "1024Mi"
   port: 8080
   adminEmail: "me@email.com"
-  javaOptions: "-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false"
+  javaOptions: "-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false -Djenkins.CLI.disabled=true"
   jenkinsHookUrl:
   jenkinsUrl: "https://jenkins.somedomain.io"
-  seedJobToken: "seed"
   permissiveScriptSecurity: false
   dslScriptSecurity: true
   # jenkinsOpts: ""
