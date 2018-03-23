@@ -16,6 +16,9 @@ kubernetes:
   timeout: 60
   maxRequestsPerHost: 1000
 
+docker:
+  username: "SDSBot"
+
 slack:
   baseUrl: "https://samsung-cnct.slack.com/services/hooks/jenkins-ci/"
   domain: "samsung-cnct"
@@ -50,6 +53,9 @@ vault:
     botAccessToken: "botAccessToken"
     oauthId: "oauthId"
     oauthKey: "oauthKey"
+  docker:
+    path: "secret/docker" 
+    passwordToken: "password"
   metrics:
     path: "secret/jenkins-metrics"
     accessTokenKey: "accessKey"

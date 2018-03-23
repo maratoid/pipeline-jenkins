@@ -8,7 +8,6 @@ import com.cloudbees.plugins.credentials.domains.*;
 import org.jenkinsci.plugins.plaincredentials.*
 import org.jenkinsci.plugins.plaincredentials.impl.*
 import org.jenkinsci.plugins.kubernetes.credentials.*
-import com.datapipe.jenkins.vault.credentials.*
 import hudson.util.Secret;
 
 def vault = new GroovyScriptEngine( '.' ).with {
@@ -26,6 +25,17 @@ Credentials githubScanCreds = (Credentials) new UsernamePasswordCredentialsImpl(
     "{{ .Values.vault.token }}", 
     "{{ .Values.vault.github.path }}", 
     "{{ .Values.vault.github.botAccessToken }}" ))
+
+Credentials dockerCreds = (Credentials) new UsernamePasswordCredentialsImpl(
+  CredentialsScope.GLOBAL,
+  "docker-creds", 
+  "docker-creds", 
+  "{{ .Values.docker.username }}", 
+  getKV(
+    true,  
+    "{{ .Values.vault.token }}", 
+    "{{ .Values.vault.docker.path }}", 
+    "{{ .Values.vault.docker.passwordToken }}" ))
 
 Credentials slackToken = (Credentials) new StringCredentialsImpl(
   CredentialsScope.GLOBAL,
@@ -49,7 +59,7 @@ Credentials githubToken = (Credentials) new StringCredentialsImpl(
       "{{ .Values.vault.github.path }}", 
       "{{ .Values.vault.github.botAccessToken }}" )))
 
-Credentials vaultToken = (Credentials) new VaultTokenCredential(
+Credentials vaultToken = (Credentials) new StringCredentialsImpl(
   CredentialsScope.GLOBAL, 
   "vault-plugin", 
   "vault-plugin", 
@@ -63,6 +73,9 @@ Credentials serviceAccount = (Credentials) new FileSystemServiceAccountCredentia
 SystemCredentialsProvider.getInstance().getStore().addCredentials(
   Domain.global(), 
   githubScanCreds)
+SystemCredentialsProvider.getInstance().getStore().addCredentials(
+  Domain.global(), 
+  dockerCreds)
 SystemCredentialsProvider.getInstance().getStore().addCredentials(
   Domain.global(), 
   slackToken)
