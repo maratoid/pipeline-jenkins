@@ -4,73 +4,68 @@
 # name: value
 
 images:
-  jenkinsmaster: "quay.io/samsung_cnct/jenkinsmaster:prod"
-  jenkinsagent: "quay.io/samsung_cnct/jenkinsagent:prod"
-  jenkinsgradle: "quay.io/samsung_cnct/jenkinsgradle:prod"
-  jenkinsshelldev: "quay.io/samsung_cnct/jenkinsshelldev:prod"
+  jenkinsmaster: "quay.io/samsung_cnct/jenkinsmaster:prod"                # Master jenkins image
 
 kubernetes:
-  cloudName: "kubernetes"
-  apiServer: "https://kubernetes.default.svc.cluster.local" 
-  containerCap: 10000
-  timeout: 60
-  maxRequestsPerHost: 1000
+  cloudName: "kubernetes"                                                 # K8s cloud name for Jenkins cloud management
+  apiServer: "https://kubernetes.default.svc.cluster.local"               # K8s api server
+  containerCap: 10000                                                     # Max containers
+  timeout: 60                                                             # Various connection timeouts
+  maxRequestsPerHost: 1000                                                # Max API requests per host
 
 docker:
-  username: "SDSBot"
+  username: "SDSBot"                                                      # USername to connect to docker registry
 
 slack:
-  baseUrl: "https://samsung-cnct.slack.com/services/hooks/jenkins-ci/"
-  domain: "samsung-cnct"
-  room: "#ping-jenkins"
-  sendAs: "SDSBot"
+  baseUrl: "https://samsung-cnct.slack.com/services/hooks/jenkins-ci/"    # Slack base URL
+  domain: "samsung-cnct"                                                  # slack team domain
+  room: "#ping-jenkins"                                                   # notification channel  
+  sendAs: "SDSBot"                                                        # send as username
 
 github:
-  apiUrl: "https://api.github.com"
-  baseUrl: "github.com"
-  manageHooks: true
+  apiUrl: "https://api.github.com"                                        # github api URL
+  baseUrl: "github.com"                                                   # github base URL
+  manageHooks: true                                                       # Allow jenkins to manage webhooks
   clientCacheSize: 20
-  overrideHookUrl:
-  admins: "change me"
-  botUser: "SDSBot"
-  pipelineOrg: "samsung-cnct"
-  pipelineRepo: "pipeline-library"
-  jobsOrg: "samsung-cnct"
-  jobsRepo: "pipeline-jobs"
-  orgNames: "samsung-cnct"
+  overrideHookUrl:                                                        # alternative callback URL for webhooks
+  admins: "change me"                                                     # list of github admins
+  botUser: "SDSBot"                                                       # github bot user
+  pipelineOrg: "samsung-cnct"                                             # Github org for shared pipeline lib
+  pipelineRepo: "pipeline-library"                                        # Github repo for shared pipeline lib
+  jobsOrg: "samsung-cnct"                                                 # github org for jenkins job configurations
+  jobsRepo: "pipeline-jobs"                                               # github repo for jenkins job configurations
+  orgNames: "samsung-cnct"                                                # Jenkins security org names
 
 vault:
-  server: "https://vault-access.prod.svc.cluster.local"
+  server: "https://vault-access.prod.svc.cluster.local"                   # URL of Vault server
   tls:
-    secret: "vault-client-tls"
-    mount: "/etc/vault/tls"
-    cert: "vault-client.pem"
-    key: "vault-client-key.pem"
-    ca: "ca.pem"
-  token: "change me"
+    secret: "vault-client-tls"                                            # Client TLS K8s secret
+    mount: "/etc/vault/tls"                                               # Client TLS secret moutn location
+    cert: "vault-client.pem"                                              # TLS secret cert file name
+    key: "vault-client-key.pem"                                           # TLS secret key file name
+    ca: "ca.pem"                                                          # TLS secret CA cert file name
+  token: "change me"                                                      # Vault login token
   github:
-    path: "secret/jenkins-github"
-    botAccessToken: "botAccessToken"
-    oauthId: "oauthId"
-    oauthKey: "oauthKey"
+    path: "secret/jenkins-github"                                         # path to github KV secret in vault
+    botAccessToken: "botAccessToken"                                      # bot access token value under the KV Vault secret
+    oauthId: "oauthId"                                                    # oauth ID value under the KV Vault secret
+    oauthKey: "oauthKey"                                                  # ouath Key value the KV Vault secret
   docker:
-    path: "secret/docker" 
-    passwordToken: "password"
+    path: "secret/docker"                                                 # path to docker registry secret in vault
+    passwordToken: "password"                                             # docker registry password key value under the KV Vault secret
   metrics:
-    path: "secret/jenkins-metrics"
-    accessTokenKey: "accessKey"
-  metrics:
-    token: "change me"
+    path: "secret/jenkins-metrics"                                        # path to metrics secret in vault
+    accessTokenKey: "accessKey"                                           # metrics access token key value under the KV Vault secret
   slack:
-    path: "secret/jenkins-slack"
-    apiTokenKey: "apiToken"
+    path: "secret/jenkins-slack"                                          # path to slack secret in Vault
+    apiTokenKey: "apiToken"                                               # Slack api key value under the KV Vault secret
   kubernetes:
-    path: "secret/jenkins-kubernetes"
-    serverCertKey: "serverCert"
+    path: "secret/jenkins-kubernetes"                                     # path to kubernetes secret in Vault
+    serverCertKey: "serverCert"                                           # Kubernetes cert key value under the KV Vault secret
 
 persistence:
-  enabled: true
-  preserve: true
+  enabled: true                                                           # Enable PVC persistance
+  preserve: true                                                          # Do not erase PVC on release destruction
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
@@ -90,50 +85,44 @@ persistence:
   size: 8Gi
 
 agent:
-  cpu: "200m"
-  memory: "1024Mi"
-  port: 50000
-  requestsPerHost: 1000
+  cpu: "200m"                                                              # Jenkins agent pod CPU requirement
+  memory: "1024Mi"                                                         # Jenkins agent pod memory requirement
+  port: 50000                                                              # Jenkins agent pod TCP port                                                   
 
 master:
-  name: jenkins-master
-  runAsUser:
-  adminUser: admin
-  adminPassword: admin
-  cpu: "200m"
-  memory: "1024Mi"
-  port: 8080
-  adminEmail: "me@email.com"
-  javaOptions: "-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false -Djenkins.CLI.disabled=true"
-  jenkinsHookUrl:
-  jenkinsUrl: "https://jenkins.somedomain.io"
-  permissiveScriptSecurity: false
-  dslScriptSecurity: true
-  # jenkinsOpts: ""
-  # jenkinsUriPrefix: "/jenkins"
+  name: jenkins-master                                                     # Jenkins master name
+  runAsUser:                                                               # Run Jenkins as user. Defaults to '0'
+  adminUser: admin                                                         # Jenkins admin user name. This gets disabled with github security in place
+  adminPassword: admin                                                     # Jenkins admin user password. This gets disabled with github security in place
+  cpu: "200m"                                                              # Jenkin CPU requrirement
+  memory: "1024Mi"                                                         # Jenkins master memory requirement
+  port: 8080                                                               # Run jenkins on port
+  adminEmail: "me@email.com"                                               # admin user email
+  javaOptions: "-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false -Djenkins.CLI.disabled=true" # JVM options
+  jenkinsUrl: "https://jenkins.somedomain.io"                              # Jenkins URL
+  permissiveScriptSecurity: false                                          # Only log script sanbox errors, do not fail 
+  dslScriptSecurity: true                                                  # Enable jobDsl script security
+  # jenkinsOpts: ""                                                        # additional jenkins command line options
+  # jenkinsUriPrefix: "/jenkins"                                           # Jenkins master uri prefix 
   healthProbes: 
-    enabled: true
-    timeout: 60
+    enabled: true                                                          # enable K8s health probes
+    timeout: 60                                                            # health probe timeout
   service:
-    type: "NodePort"
-    annotations: {}
+    type: "NodePort"                                                       # K8s service type
+    annotations: {} 
   ingress:
-    enabled: false
+    enabled: false                                                         # enable K8s ingress
     annotations: {}
     tls:
     rules:
 rbac:
-  install: true
+  install: true                                                            # Install RBAC
   serviceAccountName: default
-  # RBAC api version (currently either v1beta1 or v1)
-  apiVersion: v1beta1
-  # Cluster role reference
-  roleRef: cluster-admin
+  apiVersion: v1beta1                                                      # RBAC api version (currently either v1beta1 or v1)
+  roleRef: cluster-admin                                                   # Cluster role reference
 
 networkPolicy:
-  # Enable creation of NetworkPolicy resources.
-  enabled: true
+  enabled: true                                                            # Enable creation of NetworkPolicy resources.
 
 deployment:
-  # Deployment api version (currently either v1beta2 or v1)
-  apiVersion: v1beta2
+  apiVersion: v1beta2                                                      # Deployment api version (currently either v1beta2 or v1)
