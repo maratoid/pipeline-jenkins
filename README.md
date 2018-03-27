@@ -1,4 +1,4 @@
-# Jenkins Base Helm Chart
+# CNCT Pipeline Jenkins chart
 
 Jenkins cluster utilizing the Jenkins Kubernetes plugin
 
