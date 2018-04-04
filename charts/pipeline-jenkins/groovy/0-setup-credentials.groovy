@@ -37,6 +37,17 @@ Credentials dockerCreds = (Credentials) new UsernamePasswordCredentialsImpl(
     "{{ .Values.vault.docker.path }}", 
     "{{ .Values.vault.docker.passwordToken }}" ))
 
+Credentials chartCreds = (Credentials) new UsernamePasswordCredentialsImpl(
+  CredentialsScope.GLOBAL,
+  "chart-creds", 
+  "chart-creds", 
+  "{{ .Values.chartmuseum.username }}", 
+  getKV(
+    true,  
+    "{{ .Values.vault.token }}", 
+    "{{ .Values.vault.chartmuseum.path }}", 
+    "{{ .Values.vault.chartmuseum.passwordKey }}" ))
+
 Credentials slackToken = (Credentials) new StringCredentialsImpl(
   CredentialsScope.GLOBAL,
   "slack-access",
@@ -88,3 +99,6 @@ SystemCredentialsProvider.getInstance().getStore().addCredentials(
 SystemCredentialsProvider.getInstance().getStore().addCredentials(
   Domain.global(), 
   vaultToken)
+SystemCredentialsProvider.getInstance().getStore().addCredentials(
+  Domain.global(), 
+  chartCreds)
