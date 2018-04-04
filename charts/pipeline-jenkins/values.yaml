@@ -16,6 +16,9 @@ kubernetes:
 docker:
   username: "SDSBot"                                                      # USername to connect to docker registry
 
+chartmuseum:
+  username: "jenkins"                                                     # chart museum username
+
 slack:
   baseUrl: "https://samsung-cnct.slack.com/services/hooks/jenkins-ci/"    # Slack base URL
   domain: "samsung-cnct"                                                  # slack team domain
@@ -62,6 +65,9 @@ vault:
   kubernetes:
     path: "secret/jenkins-kubernetes"                                     # path to kubernetes secret in Vault
     serverCertKey: "serverCert"                                           # Kubernetes cert key value under the KV Vault secret
+  chartmuseum:
+    path: "secret/chart-museum"                                           # path to chart museum secret in Vault
+    passwordKey: "password"                                               # chart museum password value in the KV Vault secret
 
 persistence:
   enabled: true                                                           # Enable PVC persistance
