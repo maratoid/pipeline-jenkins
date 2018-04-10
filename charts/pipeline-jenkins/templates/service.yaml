@@ -11,11 +11,7 @@ metadata:
 {{ toYaml .Values.master.service.annotations | indent 4 }}
 spec:
   ports:
-    - port: {{.Values.master.service.externalPort}}
-      name: externalport
-      protocol: TCP
-      targetPort: {{.Values.master.port}}
-    - port: {{.Values.service.port}}
+    - port: {{.Values.master.port}}
       name: masterport
       protocol: TCP
       targetPort: {{.Values.master.port}}

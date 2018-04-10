@@ -115,7 +115,6 @@ master:
     timeout: 60                                                            # health probe timeout
   service:
     type: "NodePort"                                                       # K8s service type
-    externalPort: 80                                                       # external service port
     annotations: {} 
   ingress:
     enabled: false                                                         # enable K8s ingress
