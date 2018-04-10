@@ -123,7 +123,7 @@ master:
     rules:
 rbac:
   install: true                                                            # Install RBAC
-  serviceAccountName: default
+  serviceAccountName: jenkins
   apiVersion: v1beta1                                                      # RBAC api version (currently either v1beta1 or v1)
   roleRef: cluster-admin                                                   # Cluster role reference
 
