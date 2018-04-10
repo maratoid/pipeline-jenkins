@@ -90,7 +90,11 @@ spec:
       {{- if .Values.persistence.enabled }}
       - name: jenkins-jobs
         persistentVolumeClaim:
+      {{- if .Values.persistence.existingClaim }}
+          claimName: "{{ .Values.persistence.existingClaim }}"
+      {{- else }}
           claimName: "{{ template "jenkins.fullname" . }}"
+      {{- end }}
       {{- else }}
       - name: jenkins-jobs
         emptyDir: {}
