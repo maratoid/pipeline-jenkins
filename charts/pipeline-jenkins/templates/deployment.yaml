@@ -62,12 +62,12 @@ spec:
           livenessProbe:
             httpGet:
               path: /login
-              port: http
+              port: {{ .Values.master.port }}
             initialDelaySeconds: {{ .Values.master.healthProbes.timeout }}
           readinessProbe:
             httpGet:
               path: /login
-              port: http
+              port: {{ .Values.master.port }}
             initialDelaySeconds: {{ .Values.master.healthProbes.timeout }}
           {{- end }}          
           volumeMounts:
