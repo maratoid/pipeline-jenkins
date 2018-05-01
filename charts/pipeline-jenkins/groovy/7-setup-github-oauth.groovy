@@ -55,7 +55,7 @@ boolean allowCcTrayPermission = false
 // Grant READ permissions for Anonymous Users
 boolean allowAnonymousReadPermission = false
 // Grant ViewStatus permissions for Anonymous Users
-boolean allowAnonymousJobStatusPermission = false
+boolean allowAnonymousJobStatusPermission = true
  
 AuthorizationStrategy github_authorization = new GithubAuthorizationStrategy(adminUserNames,
     authenticatedUserReadPermission,

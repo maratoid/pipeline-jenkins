@@ -1,5 +1,6 @@
 blueocean:1.4.2
 build-blocker-plugin:1.7.3
+embeddable-build-status:1.9
 github-oauth:0.29
 github:1.29.0
 github-pr-comment-build:2.0
