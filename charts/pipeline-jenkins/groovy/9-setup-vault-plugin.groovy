@@ -10,5 +10,5 @@ def globalVaultConfig = GlobalConfiguration.all().get(GlobalVaultConfiguration.c
 globalVaultConfig.setConfiguration(
   new VaultConfiguration(
     "{{ .Values.vault.server }}", 
-    'vault-plugin'));
+    'vault-github-token'));
 globalVaultConfig.save();

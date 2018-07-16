@@ -8,6 +8,7 @@ import com.cloudbees.plugins.credentials.domains.*;
 import org.jenkinsci.plugins.plaincredentials.*
 import org.jenkinsci.plugins.plaincredentials.impl.*
 import org.jenkinsci.plugins.kubernetes.credentials.*
+import com.datapipe.jenkins.vault.credentials.*
 import hudson.util.Secret;
 
 def vault = new GroovyScriptEngine( '.' ).with {
@@ -76,6 +77,12 @@ Credentials vaultToken = (Credentials) new StringCredentialsImpl(
   "vault-plugin", 
   Secret.fromString("{{ .Values.vault.token }}"));
 
+Credentials vaultGithubToken = (Credentials) new VaultGithubTokenCredential(
+  CredentialsScope.GLOBAL, 
+  "vault-github-token", 
+  "vault-github-token", 
+  Secret.fromString("{{ .Values.vault.github.botAccessToken }}"));
+
 Credentials serviceAccount = (Credentials) new FileSystemServiceAccountCredential(
   CredentialsScope.GLOBAL,
   "kubernetes-access",
@@ -99,6 +106,9 @@ SystemCredentialsProvider.getInstance().getStore().addCredentials(
 SystemCredentialsProvider.getInstance().getStore().addCredentials(
   Domain.global(), 
   vaultToken)
+SystemCredentialsProvider.getInstance().getStore().addCredentials(
+  Domain.global(), 
+  vaultGithubToken)
 SystemCredentialsProvider.getInstance().getStore().addCredentials(
   Domain.global(), 
   chartCreds)
