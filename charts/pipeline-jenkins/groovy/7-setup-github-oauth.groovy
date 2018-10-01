@@ -53,7 +53,7 @@ boolean allowGithubWebHookPermission = true
 // Grant READ permissions for /cc.xml
 boolean allowCcTrayPermission = false
 // Grant READ permissions for Anonymous Users
-boolean allowAnonymousReadPermission = false
+boolean allowAnonymousReadPermission = true
 // Grant ViewStatus permissions for Anonymous Users
 boolean allowAnonymousJobStatusPermission = true
  
