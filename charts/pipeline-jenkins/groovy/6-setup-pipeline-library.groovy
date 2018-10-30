@@ -44,7 +44,7 @@ LibraryConfiguration pipelineConfig = new LibraryConfiguration(
 pipelineConfig.setDefaultVersion("master")
 pipelineConfig.setImplicit(true)
 pipelineConfig.setAllowVersionOverride(true)
-pipelineConfig.setIncludeInChangesets(true)
+pipelineConfig.setIncludeInChangesets(false)
 
 // set libraries
 globalLibsDesc.get().setLibraries([pipelineConfig])
